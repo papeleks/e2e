@@ -12,6 +12,7 @@ export class PaymentPlan {
         this._addPaymentPlan = locator.getByText('Add', { exact: true })
         this._paymentItems = () => locator.locator('/div[contains(@class,\'item-row\')]')
         this._description = (locator: Locator) => new MatFormField(locator, 'Description');
+        this._price = (locator: Locator) => new MatFormField(locator, 'Price');
     }
 
     async paymentPlanItems(itemsNumber: number) {
