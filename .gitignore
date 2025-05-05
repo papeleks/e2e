@@ -7,7 +7,6 @@ yarn-debug.log*
 yarn-error.log*
 /.pnp
 .pnp.js
-.idea
 
 .vscode/*
 
@@ -17,3 +16,4 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/.idea/
