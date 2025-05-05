@@ -1,0 +1,1 @@
+type FunctionType<T, R> = (input: T) => R;
