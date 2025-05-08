@@ -2,8 +2,10 @@ import {Locator, Page} from "@playwright/test";
 import {DropdownElement} from "../page-elements/DropdownElement";
 import {PurchaseDetailsModel} from "../model/PurchaseDetailsModel";
 import {PaymentPlan} from "../page-components/PaymentPlan";
+import {Currencies} from "../enums/Currencies";
+import {CriexAbstractPage} from "./abstracts/CriexAbstractPage";
 
-export class PurchasePage {
+export class PurchasePage extends CriexAbstractPage{
 
     private readonly _cancel: Locator;
     private readonly _savePurchase: Locator;
@@ -16,6 +18,7 @@ export class PurchasePage {
     private readonly _paymentPlan: PaymentPlan;
 
     constructor(page: Page) {
+        super(page);
         this._cancel = page.getByRole('button', {name: 'Cancel'});
         this._savePurchase = page.getByRole('button', {name: 'Save Purchase'});
         this._fullName = page.locator('//div[contains(@class,\'mat-form-field-infix\') and .//mat-label=\'Full Name\']//input');
@@ -29,7 +32,16 @@ export class PurchasePage {
         await this._fullName.fill(purchaseDetails.fullName);
         await this._email.fill(purchaseDetails.email);
         await this._phone.fill(purchaseDetails.phone);
-        await this._currency.selectOption(purchaseDetails.currency.toString())
+        await this._currency.selectOption(Currencies[purchaseDetails.currency])
         await this._paymentPlan.addPayments(purchaseDetails.payments);
     }
+
+    async savePurchase() {
+        await this._savePurchase.click();
+    }
+
+    async cancelPurchase() {
+        await this._cancel.click();
+    }
+
 }

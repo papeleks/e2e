@@ -1,17 +1,23 @@
 import {AppSidebar} from "../../page-components/AppSidebar";
-import {Page} from "@playwright/test";
+import {Locator, Page} from "@playwright/test";
 import {CriexPage} from "./CriexPage";
 
 export abstract class CriexAbstractPage implements CriexPage {
 
-    private readonly appSidebar: AppSidebar;
+    private readonly _appSidebar: AppSidebar;
+    private readonly _toastMessage: Locator;
 
     protected constructor(page: Page) {
-        this.appSidebar = new AppSidebar(page);
+        this._appSidebar = new AppSidebar(page);
+        this._toastMessage = page.locator("//div[@id='toast-container']//div[@role='alertdialog']")
     }
 
     getAppSidebar(): AppSidebar {
-        return this.appSidebar;
+        return this._appSidebar;
+    }
+
+    getToastMessage() {
+        return this._toastMessage;
     }
 
 }

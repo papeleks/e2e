@@ -10,7 +10,7 @@ export class PaymentPlan {
 
     constructor(locator: Locator) {
         this._addPaymentPlan = locator.getByText('Add', { exact: true })
-        this._paymentItems = () => locator.locator('/div[contains(@class,\'item-row\')]')
+        this._paymentItems = () => locator.locator('//div[contains(@class,\'item-row\')]')
         this._description = (locator: Locator) => new MatFormField(locator, 'Description');
         this._price = (locator: Locator) => new MatFormField(locator, 'Price');
     }
@@ -19,23 +19,27 @@ export class PaymentPlan {
         if (itemsNumber == 1) {
             return;
         }
-        for (let i = 0; i < itemsNumber; i++) {
+        for (let i = 0; i < itemsNumber - 1; i++) {
             await this._addPaymentPlan.click();
         }
     }
 
-    async fillPaymentPlanItemWithDetails(details: [string, string]) {
-        var itemsOnPage = await this._paymentItems().all();
-        for (let itemLocator of itemsOnPage) {
-
+    async fillPaymentPlanItemWithDetails(payments: [string, string][]) {
+        let itemsOnPage = await this._paymentItems().all();
+        if (payments.length !== itemsOnPage.length) {
+            throw new Error(`Mismatch: ${payments.length} payments but ${itemsOnPage.length} items on the page.`);
+        }
+        for (let i = 0; i < Math.min(itemsOnPage.length, payments.length); i++) {
+            let descriptionField = this._description(itemsOnPage[i]);
+            let priceField = this._price(itemsOnPage[i]);
+            await descriptionField.fill(payments[i][0]);
+            await priceField.fill(payments[i][1]);
         }
     }
 
     async addPayments(payments: [string, string][]) {
         await this.paymentPlanItems(payments.length);
-        for (let i = 0; i < payments.length; i++) {
-            await this.fillPaymentPlanItemWithDetails(payments[i]);
-        }
+        await this.fillPaymentPlanItemWithDetails(payments);
     }
 
 

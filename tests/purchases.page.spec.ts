@@ -1,4 +1,4 @@
-import {test} from '@playwright/test';
+import {expect, test} from '@playwright/test';
 import {PurchasesPage} from "../src/page/PurchasesPage";
 import {LoginPage} from "../src/page/LoginPage";
 import {LoginModel} from "../src/model/LoginModel";
@@ -23,18 +23,20 @@ test.describe('PurchasesPage', () => {
   });
 
   test('should be able to create a new purchase', async ({page}) => {
+    await purchasesPage.open();
     await purchasesPage.createNewPurchase();
     let purchasePage = new PurchasePage(page);
     let purchasePageDetails = new PurchaseDetailsModel(
         'AT Test',
         'eugeniu.savca@webchain.ro',
-        '',
+        '+1202901957',
         Currencies.EUR,
-        [['description','1'],['description','2']]
+        [['description','0.01'],['description','0.02']]
     );
     await purchasePage.fillDetails(purchasePageDetails);
+    await purchasePage.savePurchase();
+
+    await expect(purchasePage.getToastMessage()).toContainText('Purchase added as draft');
   })
-
-
 
 });
